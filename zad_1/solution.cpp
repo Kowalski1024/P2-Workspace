@@ -31,14 +31,7 @@ void SecondSolution(int n) {
 
 int main() {
     int const n = 2;
-    int x;
-    std::cout << "write 1 or 2\n";
-    std::cin >> x;
-    std::cin.clear();
-    if(x==1) {
-        FirstSolution(n);
-    } else if (x==2) {
-        SecondSolution(n);
-    }
+    FirstSolution(n);
+    SecondSolution(n);
     return 0;
 }
