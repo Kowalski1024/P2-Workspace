@@ -1,7 +1,10 @@
 #include <iostream>
 #include <cstring>
 
-void FirstSolution(int n) {
+// Tomasz Wojnar
+// github https://github.com/Kowalski1024/P2_workspace
+
+void StringStyle(int n) {
     std::string arr[n];
     std::string *ptr = arr;
     for (int i = 0; i < n; ++i) {
@@ -14,24 +17,27 @@ void FirstSolution(int n) {
     }
 }
 
-void SecondSolution(int n) {
+void CStyle(int n) {
     char * arr[n];
     for (int i = 0; i < n; ++i) {
-        char * surname = new char;
-        gets(surname);
+        char * buffer = new char;
+        gets(buffer);
+        char * surname = (char*) malloc(strlen(buffer)+1);
+        strcpy(surname, buffer);
+        delete buffer;
         *(arr+i) = surname;
     }
 
     printf("Solution 2\n");
     for (int i = 0; i < n; ++i) {
         printf("%d: %s - length %d\n", i, *(arr+i), strlen(*(arr+i)));
-        delete *(arr+i);
+        free(*(arr+i));
     }
 }
 
 int main() {
     int const n = 2;
-    FirstSolution(n);
-    SecondSolution(n);
+    StringStyle(n);
+    CStyle(n);
     return 0;
 }

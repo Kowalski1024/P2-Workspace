@@ -2,6 +2,9 @@
 #include <string>
 #include <memory>
 
+// Tomasz Wojnar
+// github https://github.com/Kowalski1024/P2_workspace
+
 struct Document {
     std::string programmingLanguage = "c++";
     int commits = 1;
