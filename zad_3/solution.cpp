@@ -6,25 +6,37 @@ void Input(int mask[], int ipv4[]) {
     std::string ip_num = "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])";
     std::string mask_num = "(255|254|252|248|240|224|192|128|0)";
     std::regex IPv4_r("^(" + ip_num + "\\.){3}" + ip_num + "$");
-    std::regex mask_r("^(255\\." + mask_num + ".0.0)|(255.255." + mask_num + ".0)|(255.255.255." + mask_num + ")$");
+    std::regex mask_r("^(255\\." + mask_num + ".0.0)|((255\\.){2}" + mask_num + ".0)|((255\\.){3}" + mask_num + ")$");
     std::string ip_str, mask_str;
+    char * str = new char;
+    char * temp;
+
     do {
         std::cout << "Insert IP\n";
-        std::cin >> ip_str;
-    } while (!std::regex_match(ip_str, IPv4_r));
+        std::cin >> str;
+    } while (!std::regex_match(str, IPv4_r));
+
+    // ip address to int
+    temp = std::strtok(str, ".");
+    for(int i=0; i<3; i++) {
+        ipv4[i] = std::atoi(temp);
+        temp = std::strtok(nullptr, ".");
+    }
+    ipv4[3] = std::atoi(temp);
+
+
     do {
         std::cout << "Insert mask\n";
-        std::cin >> mask_str;
-    } while (!std::regex_match(mask_str, mask_r));
-    std::stringstream p(ip_str);
-    std::stringstream k(mask_str);
-    char h;
-    for (int i = 0; i < 3; i++) {
-        p >> ipv4[i] >> h;
-        k >> mask[i] >> h;
+        std::cin >> str;
+    } while (!std::regex_match(str, mask_r));
+
+    temp = std::strtok(str, ".");
+    for(int i=0; i<3; i++) {
+        mask[i] = std::atoi(temp);
+        temp = std::strtok(nullptr, ".");
     }
-    p >> ipv4[3];
-    k >> mask[3];
+    mask[3] = std::atoi(temp);
+    delete str;
 }
 
 int main() {
