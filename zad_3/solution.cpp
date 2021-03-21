@@ -44,23 +44,22 @@ int main() {
     int ipv4Int[4];
     int subnet[4];
     Input(maskInt, ipv4Int);
-    std::bitset<8> maskBit[4]{maskInt[0], maskInt[1], maskInt[2], maskInt[3]};
-    std::bitset<8> ipBit[4]{ipv4Int[0], ipv4Int[1], ipv4Int[2], ipv4Int[3]};
     for (int i = 0; i < 4; i++) {
-        subnet[i] = (int) (ipBit[i] & maskBit[i].flip()).to_ulong();
+        subnet[i] = (ipv4Int[i] & maskInt[i]);
     }
-    std::bitset<8> subnetBit[4]{subnet[0], subnet[1], subnet[2], subnet[3]};
     std::cout << "IPv4:\n";
-    std::cout << ipBit[0] << "." << ipBit[1] << "." << ipBit[2] << "." << ipBit[3] << std::endl;
+    std::cout << std::bitset<8>(ipv4Int[0]) << "." << std::bitset<8>(ipv4Int[1]) <<
+    "." << std::bitset<8>(ipv4Int[2]) << "." << std::bitset<8>(ipv4Int[3]) << std::endl;
     printf("%d.%d.%d.%d\n", ipv4Int[0], ipv4Int[1], ipv4Int[2], ipv4Int[3]);
     printf("%x.%x.%x.%x\n", ipv4Int[0], ipv4Int[1], ipv4Int[2], ipv4Int[3]);
     std::cout << "Mask:\n";
-    std::cout << maskBit[0].flip() << "." << maskBit[1].flip() << "."
-              << maskBit[2].flip() << "." << maskBit[3].flip() << std::endl;
+    std::cout << std::bitset<8>(maskInt[0]) << "." << std::bitset<8>(maskInt[1]) <<
+              "." << std::bitset<8>(maskInt[2]) << "." << std::bitset<8>(maskInt[3]) << std::endl;
     printf("%d.%d.%d.%d\n", maskInt[0], maskInt[1], maskInt[2], maskInt[3]);
     printf("%x.%x.%x.%x\n", maskInt[0], maskInt[1], maskInt[2], maskInt[3]);
     std::cout << "Subnet:\n";
-    std::cout << subnetBit[0] << "." << subnetBit[1] << "." << subnetBit[2] << "." << subnetBit[3] << std::endl;
+    std::cout << std::bitset<8>(subnet[0]) << "." << std::bitset<8>(subnet[1]) <<
+              "." << std::bitset<8>(subnet[2]) << "." << std::bitset<8>(subnet[3]) << std::endl;
     printf("%d.%d.%d.%d\n", subnet[0], subnet[1], subnet[2], subnet[3]);
     printf("%x.%x.%x.%x\n", subnet[0], subnet[1], subnet[2], subnet[3]);
 }
