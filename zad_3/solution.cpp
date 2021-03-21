@@ -8,7 +8,7 @@ void Input(int address[][4]) {
     std::regex IPv4_r("^(" + ip_num + "\\.){3}" + ip_num + "$");
     std::regex mask_r("^(255\\." + mask_num + ".0.0)|((255\\.){2}" + mask_num + ".0)|((255\\.){3}" + mask_num + ")$");
     std::string ip_str, mask_str;
-    char * str = new char;
+    char str[15];
     char * temp;
 
     do {
@@ -35,20 +35,19 @@ void Input(int address[][4]) {
         temp = std::strtok(nullptr, ".");
     }
     address[1][3] = std::atoi(temp);
-    delete str;
-
-    for (int i = 0; i < 4; i++) {
-        address[2][i] = (address[0][i] & address[1][i]);
-    }
+//    delete str;
 }
 
 int main() {
     int address[3][4];
     Input(address);
+    for (int i = 0; i < 4; i++) {
+        address[2][i] = (address[0][i] & address[1][i]);
+    }
     std::string str[3] = {"IPv4:\n", "Mask:\n", "Subnet:\n"};
     for(int i=0; i<3; i++) {
         std::cout << str[i];
-        for(int j=0; j<4; j++) {
+        for(int j=0; j<3; j++) {
             std::cout << std::bitset<8>(address[i][j]) << ".";
         }
         std::cout << std::bitset<8>(address[i][3]) << std::endl;
