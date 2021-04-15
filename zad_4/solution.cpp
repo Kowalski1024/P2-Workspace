@@ -48,17 +48,19 @@ std::string str = R"(""ARTHUR: Three questions may cross in safety. "
 "ARTHUR: To seek the Holy Grail. "
 "BRIDGEKEEPER: What... is the air-speed velocity of an unladen swallow? "
 "ARTHUR: What do you mean? An African or European swallow? "
-"BRIDGEKEEPER: Huh? I-- I don't know that. Auuuuuuuugh! " ")";
+"BRIDGEKEEPER: Huh? I-- I don't know that. Auuuuuuuugh! "
+Ela Ea EA aE Eaaaa E a haE
+")";
 
 
 int main() {
-    std::regex reg(R"(E.*)");
+    std::regex reg(R"(\b[a-df-zA-DF-Z]*a[[:alpha:]]*\b)");
     auto iterator_begin = std::sregex_iterator(str.begin(), str.end(), reg);
     auto iterator_end = std::sregex_iterator();
     int j = 1;
     for (std::sregex_iterator i = iterator_begin; i != iterator_end; i++) {
         std::smatch word = *i;
-        std::cout << j << " Dopasowanie: " << word.str() << std::endl;
+        std::cout << j << ". " << word.str() << std::endl;
         j++;
     }
 
