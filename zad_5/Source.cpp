@@ -14,21 +14,21 @@ public:
     void changeMessage();
     void raiseLevel();
     void reduceLevel();
-    void printLevel();
     bool doSomething();
+    void printLevel();
     void printLevel(string fileName);
     explicit Dziennik(tier level = FINEST);
     ~Dziennik();
 
 private:
     string m_messages[7] = {
-            "Stan bardzo dobry",
-            "Stan dobry",
-            "Stan dostateczny",
-            "Potrzebna jest uwaga uzytkowanika",
-            "Wykryto anomalie",
-            "Stan zagrozenia",
-            "Stan wysokiego zagrozenia",
+            "DEFCON 5",
+            "DEFCON 4",
+            "DEFCON 3",
+            "Prepare to DEFCON 2",
+            "Sirens were turned on to warn of a possible nuclear attack",
+            "DEFCON 2",
+            "DEFCON 1",
     };
     void setLevel(int level);
     bool finest();
@@ -44,53 +44,52 @@ private:
 };
 
 bool Dziennik::finest() {
-    cout << "Done!" << endl;
+    cout << "Normal combat readiness" << endl;
     return true;
 }
 
 bool Dziennik::finer() {
-    cout << "Done!" << endl;
+    cout << "Increased combat readiness" << endl;
     return true;
 }
 
 bool Dziennik::fine() {
-    cout << "Done!" << endl;
+    cout << "USAF Air Force ready for mobilization" << endl;
     return true;
 }
 
 bool Dziennik::config() {
-    cout << "Done!" << endl;
+    cout << "President secured in the plane" << endl;
     return true;
 }
 
 bool Dziennik::info() {
-    cout << "Done!" << endl;
+    cout << "Please go to fallout shelters" << endl;
     return true;
 }
 
 bool Dziennik::warning() {
-    cout << "Done!" << endl;
+    cout << "Prepare to nuclear attack" << endl;
     return true;
 }
 
 bool Dziennik::severe() {
-    cout << "Done!" << endl;
+    cout << "Nuclear war inevitable" << endl;
     return true;
 }
 
 Dziennik::Dziennik(tier level) : m_level(level) {
-    cout << "Stworzono nowy dziennik z poziomem " << getTierName() << endl;
+    cout << "Diary was created with level " << getTierName() << endl;
 }
 
 Dziennik::~Dziennik() {
-    cout << "Dziennik zostal zniszczony" << endl;
+    cout << "Diary has been destroyed" << endl;
 }
 
 string Dziennik::getTierMessage() {
     return m_messages[(int)m_level];
 }
 
-// jakas funkcjonalnosc zalezonosci od poziomu (brak pomyslow co moglobyc takiego)
 bool Dziennik::doSomething() {
     switch (m_level) {
         case FINEST:
@@ -143,15 +142,15 @@ void Dziennik::setLevel(int level) {
 
 void Dziennik::changeMessage() {
     string mess;
-    cout << "Podaj nowy komunikat dla poziomu " << getTierName() << endl;
+    cout << "Enter a new message " << getTierName() << endl;
     cin >> mess;
     m_messages[(int)m_level] = mess;
-    cout << "Zmieniono na: " << mess << endl;
+    cout << "Changed to: " << mess << endl;
 }
 
 void Dziennik::raiseLevel() {
     if((int)m_level >= 6) {
-        cout << "Jest to najwyzszy poziom" << endl;
+        cout << "This is the highest level" << endl;
         return;
     }
     setLevel((int)m_level+1);
@@ -159,7 +158,7 @@ void Dziennik::raiseLevel() {
 
 void Dziennik::reduceLevel() {
     if((int)m_level <= 0) {
-        cout << "Jest to najnizszy poziom" << endl;
+        cout << "This is the lowest level" << endl;
         return;
     }
     setLevel((int)m_level-1);
@@ -168,17 +167,17 @@ void Dziennik::reduceLevel() {
 void Dziennik::printLevel(string fileName) {
     ofstream file;
     file.open(fileName, std::ios_base::app);
-    file << "Poziom " << getTierName() << ": " << getTierMessage() << endl;
-    cout << "Zapisano do pliku " << fileName << endl;
+    file << getTierName() << ": " << getTierMessage() << endl;
+    cout << "Saved to file " << fileName << endl;
 }
 
 void Dziennik::printLevel() {
-    cout << "Poziom " << getTierName() << ": " << getTierMessage() << endl;
+    cout << getTierName() << ": " << getTierMessage() << endl;
 }
 
 int main() {
     Dziennik *diary = new Dziennik();
-    cout << "Polecenia: raise, reduce, PRF [file], PRT, change, take, clear" << endl;
+    cout << "Commands: raise, reduce, PRF [file], PRT, change, info, clear" << endl;
     string command;
     cin >> command;
     while(command != "END") {
@@ -196,7 +195,7 @@ int main() {
             diary->printLevel();
         }  else if(command == "change") {   // change message on actual level
             diary->changeMessage();
-        }  else if(command == "take") {
+        }  else if(command == "info") {
             if(diary->doSomething()) {
                 cout << "Successful" << endl;
             } else {
