@@ -4,12 +4,12 @@
 
 using namespace std;
 
-enum tier {
-    FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE
-};
 
 class Dziennik {
 public:
+    enum tier {
+    FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE
+    };
     void setLevel(tier level);
     void changeMessage();
     void raiseLevel();
@@ -167,6 +167,10 @@ void Dziennik::reduceLevel() {
 void Dziennik::printLevel(string fileName) {
     ofstream file;
     file.open(fileName, std::ios_base::app);
+    if(file.fail()) {
+        cout << "File error" << endl;
+        return;
+    }
     file << getTierName() << ": " << getTierMessage() << endl;
     cout << "Saved to file " << fileName << endl;
 }
@@ -202,7 +206,7 @@ int main() {
                 cout << "Fail" << endl;
             }
         } else if(command == "clear") {
-            diary->setLevel(FINEST);
+            diary->setLevel(diary->FINEST);
             diary->printLevel();
         }
         cin >> command;
