@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <algorithm>
 
 class Matrix {
 private:
@@ -19,7 +19,11 @@ public:
 
 
     void transpose();
+
+    void identity();
+
     float getElementAt(int row, int column);
+
     void setElementAt(int row, int column, float value);
 
     Matrix &operator=(const Matrix &other);
@@ -49,7 +53,10 @@ public:
     Matrix &operator*=(const Matrix &other);
 
     friend std::ostream &operator<<(std::ostream &output, const Matrix &matrix);
+
     friend std::istream &operator>>(std::istream &input, Matrix &matrix);
+
+    friend bool operator<(Matrix &one, const Matrix &two);
 };
 
 Matrix::Matrix() : m_data{new float *[3]{new float[3]{0, 0, 0}, new float[3]{0, 0, 0}, new float[3]{0, 0, 0}}} {
@@ -93,13 +100,15 @@ std::ostream &operator<<(std::ostream &output, const Matrix &matrix) {
             output << " ";
         }
         output << "[";
-        for (int j = 0; j < 3; ++j) {
+        for (int j = 0; j < 2; ++j) {
             output << matrix.m_data[i][j];
-            if (j < 2) {
-                output << ",\t";
-            }
+            output << ",\t";
         }
-        output << "]" << std::endl;
+        output << matrix.m_data[i][2];
+        output << "]";
+        if (i < 2) {
+            output << std::endl;
+        }
     }
     output << "]" << std::endl;
     return output;
@@ -107,7 +116,7 @@ std::ostream &operator<<(std::ostream &output, const Matrix &matrix) {
 
 std::istream &operator>>(std::istream &input, Matrix &matrix) {
     for (int i = 0; i < 9; ++i) {
-        input >> matrix.m_data[i/3][i%3];
+        input >> matrix.m_data[i / 3][i % 3];
     }
     return input;
 }
@@ -127,9 +136,7 @@ Matrix &Matrix::operator+(const Matrix &other) {
 }
 
 Matrix &Matrix::operator+=(const Matrix &other) {
-    for (int i = 0; i < 9; ++i) {
-        m_data[i / 3][i % 3] += other.m_data[i / 3][i % 3];
-    }
+    operator+(other);
     return *this;
 }
 
@@ -141,18 +148,17 @@ Matrix &Matrix::operator-(const Matrix &other) {
 }
 
 Matrix &Matrix::operator-=(const Matrix &other) {
-    for (int i = 0; i < 9; ++i) {
-        m_data[i / 3][i % 3] -= other.m_data[i / 3][i % 3];
-    }
+    operator-(other);
     return *this;
 }
 
 Matrix &Matrix::operator++(int) {
-    Matrix prev = *this;
+//    Matrix prev = *this;
     for (int i = 0; i < 9; ++i) {
         m_data[i / 3][i % 3] += 1;
     }
-    return prev;
+//    return prev;
+    return *this;
 }
 
 Matrix &Matrix::operator++() {
@@ -163,11 +169,12 @@ Matrix &Matrix::operator++() {
 }
 
 Matrix &Matrix::operator--(int) {
-    Matrix prev = *this;
+//    Matrix prev = *this;
     for (int i = 0; i < 9; ++i) {
         m_data[i / 3][i % 3] -= 1;
     }
-    return prev;
+//    return prev;
+    return *this;
 }
 
 Matrix &Matrix::operator--() {
@@ -179,24 +186,22 @@ Matrix &Matrix::operator--() {
 
 Matrix &Matrix::operator*(int value) {
     for (int i = 0; i < 9; ++i) {
-        m_data[i / 3][i % 3] *= (float)value;
+        m_data[i / 3][i % 3] *= (float) value;
     }
     return *this;
 }
 
 Matrix &Matrix::operator*=(int value) {
-    for (int i = 0; i < 9; ++i) {
-        m_data[i / 3][i % 3] *= (float)value;
-    }
+    operator*(value);
     return *this;
 }
 
 Matrix &Matrix::operator*(const Matrix &other) {
     float tmp[3][3];
     for (int i = 0; i < 9; ++i) {
-        float result=0;
+        float result = 0;
         for (int j = 0; j < 3; ++j) {
-            result += (m_data[i/3][j] * other.m_data[j][i%3]);
+            result += (m_data[i / 3][j] * other.m_data[j][i % 3]);
         }
         tmp[i / 3][i % 3] = result;
     }
@@ -207,35 +212,71 @@ Matrix &Matrix::operator*(const Matrix &other) {
 }
 
 Matrix &Matrix::operator*=(const Matrix &other) {
-    float tmp[3][3];
-    for (int i = 0; i < 9; ++i) {
-        float result=0;
-        for (int j = 0; j < 3; ++j) {
-            result += (m_data[i/3][j] * other.m_data[j][i%3]);
-        }
-        tmp[i / 3][i % 3] = result;
-    }
-    for (int i = 0; i < 9; ++i) {
-        m_data[i / 3][i % 3] = tmp[i / 3][i % 3];
-    }
+    operator*(other);
     return *this;
 }
 
 float Matrix::getElementAt(int row, int column) {
-    return m_data[row-1][column-1];
+    return m_data[row - 1][column - 1];
 }
 
 void Matrix::setElementAt(int row, int column, float value) {
-    m_data[row-1][column-1] = value;
+    m_data[row - 1][column - 1] = value;
 }
 
 void Matrix::transpose() {
+    for (size_t i = 0; i < 3; i++) {
+        for (size_t j = i + 1; j < 3; j++) {
+            std::swap(m_data[i][j], m_data[j][i]);
+        }
+    }
+}
 
+// tworzyc nowa czy nadpisywac?
+void Matrix::identity() {
+    *this = Matrix({1, 0, 0, 0, 1, 0, 0, 0, 1});
+}
+
+bool operator<(Matrix &one, const Matrix &two) {
+    double sum1 = 0, sum2 = 0;
+    for (int i = 0; i < 9; ++i) {
+        sum1 += one.m_data[i / 3][i % 3];
+        sum2 += two.m_data[i / 3][i % 3];
+    }
+    if (sum1 < sum2) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
 int main() {
-    Matrix m = Matrix({1,1,1,1,1,1,1,1,1});
-    Matrix w = Matrix({1, 2, 3,4,5,6,7,8,9});
-    std::cout << w.getElementAt(3, 2) << std::endl;
+    {
+        Matrix mat[3];
+        mat[0] = Matrix(9.1);
+        mat[1] = Matrix(5.25);
+        mat[2] = Matrix(6.99);
+        std::cout << "Before sorting: " << std::endl;
+        for (int i = 0; i < 3; ++i) {
+            std::cout << mat[i] << std::endl;
+        }
+        std::sort(mat, mat + 3, operator<);
+        std::cout << "After sorting: " << std::endl;
+        for (int i = 0; i < 3; ++i) {
+            std::cout << mat[i] << std::endl;
+        }
+    }
+
+    {
+        Matrix matOne = Matrix({1.2, 2.2, 3.2, 3.2, 2.2, 1.2, 1.2, 2.2, 3.2});
+        Matrix matTwo = Matrix({1, 2, 3, 4, 5, 6, 7, 8, 9});
+        std::cout << "Operands for multiplication: " << std::endl;
+        std::cout << matOne << std::endl;
+        std::cout << matTwo << std::endl;
+        std::cout << "Result: " << std::endl;
+        matOne *= matTwo;
+        std::cout << matOne << std::endl;
+    }
+
 }
