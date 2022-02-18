@@ -129,36 +129,35 @@ Matrix &Matrix::operator=(const Matrix &other) {
 }
 
 Matrix &Matrix::operator+(const Matrix &other) {
+    Matrix result = Matrix(*this);
     for (int i = 0; i < 9; ++i) {
-        m_data[i / 3][i % 3] += other.m_data[i / 3][i % 3];
+        result.m_data[i / 3][i % 3] += other.m_data[i / 3][i % 3];
     }
-    return *this;
+    return result;
 }
 
 Matrix &Matrix::operator+=(const Matrix &other) {
-    operator+(other);
-    return *this;
+    return *this = operator+(other);
 }
 
 Matrix &Matrix::operator-(const Matrix &other) {
+    Matrix result = Matrix(*this);
     for (int i = 0; i < 9; ++i) {
-        m_data[i / 3][i % 3] -= other.m_data[i / 3][i % 3];
+        result.m_data[i / 3][i % 3] -= other.m_data[i / 3][i % 3];
     }
-    return *this;
+    return result;
 }
 
 Matrix &Matrix::operator-=(const Matrix &other) {
-    operator-(other);
-    return *this;
+    return *this = operator-(other);
 }
 
 Matrix &Matrix::operator++(int) {
-//    Matrix prev = *this;
+   Matrix prev = Matrix(*this);
     for (int i = 0; i < 9; ++i) {
         m_data[i / 3][i % 3] += 1;
     }
-//    return prev;
-    return *this;
+   return prev;
 }
 
 Matrix &Matrix::operator++() {
@@ -169,12 +168,11 @@ Matrix &Matrix::operator++() {
 }
 
 Matrix &Matrix::operator--(int) {
-//    Matrix prev = *this;
+   Matrix prev = Matrix(*this);
     for (int i = 0; i < 9; ++i) {
         m_data[i / 3][i % 3] -= 1;
     }
-//    return prev;
-    return *this;
+   return prev;
 }
 
 Matrix &Matrix::operator--() {
@@ -185,18 +183,19 @@ Matrix &Matrix::operator--() {
 }
 
 Matrix &Matrix::operator*(int value) {
+    Matrix result = Matrix(*this);
     for (int i = 0; i < 9; ++i) {
-        m_data[i / 3][i % 3] *= (float) value;
+        result.m_data[i / 3][i % 3] *= (float) value;
     }
-    return *this;
+    return result;
 }
 
 Matrix &Matrix::operator*=(int value) {
-    operator*(value);
-    return *this;
+    return *this = operator*(value);
 }
 
 Matrix &Matrix::operator*(const Matrix &other) {
+    Matrix res = Matrix(*this);
     float tmp[3][3];
     for (int i = 0; i < 9; ++i) {
         float result = 0;
@@ -206,14 +205,13 @@ Matrix &Matrix::operator*(const Matrix &other) {
         tmp[i / 3][i % 3] = result;
     }
     for (int i = 0; i < 9; ++i) {
-        m_data[i / 3][i % 3] = tmp[i / 3][i % 3];
+        res.m_data[i / 3][i % 3] = tmp[i / 3][i % 3];
     }
-    return *this;
+    return res;
 }
 
 Matrix &Matrix::operator*=(const Matrix &other) {
-    operator*(other);
-    return *this;
+    return *this = operator*(other);
 }
 
 float Matrix::getElementAt(int row, int column) {
